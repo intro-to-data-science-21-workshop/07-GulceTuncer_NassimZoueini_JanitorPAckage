@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="presented by Gülce Sena Tuncer &amp; Nassim Zoueini" />
+
+
+<title>janitor: an overview</title>
+
+<script src="janitor-01_files/header-attrs-2.11/header-attrs.js"></script>
+<script src="janitor-01_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="janitor-01_files/bootstrap-3.3.5/css/lumen.min.css" rel="stylesheet" />
+<script src="janitor-01_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="janitor-01_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="janitor-01_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="janitor-01_files/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="janitor-01_files/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="janitor-01_files/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="janitor-01_files/navigation-1.1/tabsets.js"></script>
+<link href="janitor-01_files/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+<script src="janitor-01_files/pagedtable-1.1/js/pagedtable.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  background-color: #f8f8f8; }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ef2929; } /* Alert */
+code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #c4a000; } /* Attribute */
+code span.bn { color: #0000cf; } /* BaseN */
+code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4e9a06; } /* Char */
+code span.cn { color: #000000; } /* Constant */
+code span.co { color: #8f5902; font-style: italic; } /* Comment */
+code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code span.dt { color: #204a87; } /* DataType */
+code span.dv { color: #0000cf; } /* DecVal */
+code span.er { color: #a40000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #0000cf; } /* Float */
+code span.fu { color: #000000; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code span.ot { color: #8f5902; } /* Other */
+code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code span.sc { color: #000000; } /* SpecialChar */
+code span.ss { color: #4e9a06; } /* SpecialString */
+code span.st { color: #4e9a06; } /* String */
+code span.va { color: #000000; } /* Variable */
+code span.vs { color: #4e9a06; } /* VerbatimString */
+code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<link rel="stylesheet" href="custom.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">janitor: an overview</h1>
+<h3 class="subtitle">Useful Tools for Cleaning and Exploring Dirty Data</h3>
+<h4 class="author">presented by Gülce Sena Tuncer &amp; Nassim Zoueini</h4>
+
+</div>
+
+
+<p>Welcome to an overview of <strong><span style="color: blue;">janitor</span></strong>, an R package that helps beginner/intermediate R users to <strong>format columns, clean dirty data, and explore data sets</strong> in order to easily and quickly prepare data for analysis! <span style="color: blue;">janitor</span> follows tidyverse principles and works well with piping.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(janitor)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readxl)</span></code></pre></div>
+<div id="importing-data" class="section level2">
+<h2>Importing data</h2>
+<p>We can <strong>import our excel file</strong> using the <code>read_excel()</code> function.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>dirty_data <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="st">&quot;sample_data.xlsx&quot;</span>)</span></code></pre></div>
+<p>Note that the <code>echo = FALSE</code> parameter was added to the code chunk to prevent printing of the R code that generated the plot.</p>
+</div>
+<div id="cleaning-column-names" class="section level2">
+<h2>Cleaning column names</h2>
+<p>We use <code>clean_names()</code> to <strong>manage column names</strong>. The function takes all column names and converts to lowercase letters, adds "_" as a separator, gets rid of special characters and unnecessary spaces, assigns numbers to duplicated names, and converts “%” to “percent”.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>dirty_data</span></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["First name"],"name":[1],"type":["chr"],"align":["left"]},{"label":["last name"],"name":[2],"type":["chr"],"align":["left"]},{"label":["Age ---"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["Class of??"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["Vac status"],"name":[5],"type":["chr"],"align":["left"]},{"label":["Vaccine"],"name":[6],"type":["chr"],"align":["left"]},{"label":["Latest vaccination"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["Grade %"],"name":[8],"type":["lgl"],"align":["right"]},{"label":["GPA"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["Declared--major"],"name":[10],"type":["chr"],"align":["left"]},{"label":["Course 1"],"name":[11],"type":["chr"],"align":["left"]},{"label":["course.  2"],"name":[12],"type":["chr"],"align":["left"]},{"label":["course 3+"],"name":[13],"type":["chr"],"align":["left"]},{"label":["Course 4"],"name":[14],"type":["chr"],"align":["left"]}],"data":[{"1":"Sadie","2":"Miles","3":"19","4":"2025","5":"Yes","6":"Pfizer–BioNTech","7":"44434","8":"NA","9":"2.2","10":"Economics","11":"Economics 101","12":"Policy 101","13":"Calculus 101","14":"Spanish 101"},{"1":"Alex","2":"Chapman","3":"19","4":"2024","5":"No","6":"NA","7":"NA","8":"NA","9":"2.3","10":"Government","11":"Economics 101","12":"Policy 101","13":"Calculus 201","14":"French 101"},{"1":"Tim","2":"Ronan","3":"18","4":"2025","5":"Yes","6":"Pfizer–BioNTech","7":"44473","8":"NA","9":"3.9","10":"Economics","11":"Economics 101","12":"Calculus 101","13":"Policy 101","14":"French 101"},{"1":"Jennifer","2":"Perry","3":"19","4":"2025","5":"Yes","6":"Pfizer–BioNTech","7":"44464","8":"NA","9":"3.2","10":"Government","11":"Economics 101","12":"Sociology 101","13":"Policy 101","14":"NA"},{"1":"Rachel","2":"Holmes","3":"18","4":"2025","5":"No","6":"NA","7":"NA","8":"NA","9":"3.5","10":"NA","11":"Economics 101","12":"Calculus 101","13":"Art history 101","14":"NA"},{"1":"Omar","2":"Richards","3":"20","4":"2025","5":"Yes","6":"Pfizer–BioNTech","7":"44477","8":"NA","9":"2.8","10":"Sociology","11":"Economics 101","12":"Sociology 101","13":"Policy 101","14":"Calculus 101"},{"1":"Leila","2":"Holt","3":"18","4":"2025","5":"Yes","6":"Johnson & Johnson","7":"44484","8":"NA","9":"2.6","10":"Sociology","11":"Economics 101","12":"Sociology 101","13":"NA","14":"NA"},{"1":"NA","2":"NA","3":"NA","4":"NA","5":"NA","6":"NA","7":"NA","8":"NA","9":"NA","10":"NA","11":"NA","12":"NA","13":"NA","14":"NA"},{"1":"Otis","2":"Price","3":"18","4":"2025","5":"Yes","6":"Johnson & Johnson","7":"44464","8":"NA","9":"3.4","10":"Government","11":"Economics 101","12":"Calculus 201","13":"Policy 101","14":"Spanish 101"},{"1":"Alex","2":"Jacobs","3":"19","4":"2025","5":"Yes","6":"Pfizer–BioNTech","7":"44434","8":"NA","9":"3.8","10":"Economics","11":"Economics 101","12":"Sociology 101","13":"NA","14":"Calculus 101"},{"1":"Mary","2":"Morris","3":"20","4":"2025","5":"Yes","6":"Moderna","7":"44425","8":"NA","9":"2.1","10":"Economics","11":"Economics 101","12":"Calculus 201","13":"Spanish 101","14":"Anthropology 101"},{"1":"Annie","2":"Fox","3":"18","4":"2025","5":"Yes","6":"Moderna","7":"44427","8":"NA","9":"2.2","10":"French","11":"Economics 101","12":"French 101","13":"NA","14":"Calculus 201"},{"1":"Rick","2":"Webster","3":"19","4":"2025","5":"No","6":"NA","7":"NA","8":"NA","9":"3.5","10":"NA","11":"Economics 101","12":"Calculus 101","13":"NA","14":"NA"},{"1":"Thomas","2":"Flynn","3":"22","4":"2022","5":"NA","6":"NA","7":"NA","8":"NA","9":"3.6","10":"Spanish","11":"Economics 101","12":"Spanish 308","13":"Calculus 302","14":"Sociology 201"},{"1":"Alfred","2":"Marshall","3":"20","4":"2025","5":"NA","6":"NA","7":"NA","8":"NA","9":"3.0","10":"Economics","11":"Economics 101","12":"Sociology 101","13":"Policy 101","14":"NA"},{"1":"Nadia","2":"Youssef","3":"18","4":"2025","5":"Yes","6":"NA","7":"44415","8":"NA","9":"3.0","10":"Government","11":"Economics 101","12":"Policy 101","13":"Calculus 201","14":"Spanish 101"},{"1":"Joseph","2":"Wilson","3":"19","4":"2025","5":"No","6":"NA","7":"NA","8":"NA","9":"2.8","10":"Economics","11":"Economics 101","12":"Calculus 201","13":"NA","14":"NA"},{"1":"Jane","2":"Owens","3":"20","4":"2025","5":"Yes","6":"Pfizer–BioNTech","7":"44456","8":"NA","9":"3.7","10":"Anthropology","11":"Economics 101","12":"Calculus 201","13":"Policy 101","14":"Anthropology 101"},{"1":"Ali","2":"Abbas","3":"21","4":"2023","5":"Yes","6":"Pfizer–BioNTech","7":"44485","8":"NA","9":"2.5","10":"Economics","11":"Economics 101","12":"Policy 101","13":"NA","14":"NA"},{"1":"Rayan","2":"Abdi","3":"19","4":"2025","5":"Yes","6":"Pfizer–BioNTech","7":"44471","8":"NA","9":"3.1","10":"Sociology","11":"Economics 101","12":"Sociology 101","13":"Calculus 201","14":"NA"},{"1":"Molly","2":"Kane","3":"19","4":"2025","5":"Yes","6":"Pfizer–BioNTech","7":"44421","8":"NA","9":"2.8","10":"Government","11":"Economics 101","12":"Policy 101","13":"Calculus 201","14":"French 101"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>student_data <span class="ot">&lt;-</span> dirty_data <span class="sc">%&gt;%</span> <span class="fu">clean_names</span>()</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>student_data</span></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["first_name"],"name":[1],"type":["chr"],"align":["left"]},{"label":["last_name"],"name":[2],"type":["chr"],"align":["left"]},{"label":["age"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["class_of"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["vac_status"],"name":[5],"type":["chr"],"align":["left"]},{"label":["vaccine"],"name":[6],"type":["chr"],"align":["left"]},{"label":["latest_vaccination"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["grade_percent"],"name":[8],"type":["lgl"],"align":["right"]},{"label":["gpa"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["declared_major"],"name":[10],"type":["chr"],"align":["left"]},{"label":["course_1"],"name":[11],"type":["chr"],"align":["left"]},{"label":["course_2"],"name":[12],"type":["chr"],"align":["left"]},{"label":["course_3"],"name":[13],"type":["chr"],"align":["left"]},{"label":["course_4"],"name":[14],"type":["chr"],"align":["left"]}],"data":[{"1":"Sadie","2":"Miles","3":"19","4":"2025","5":"Yes","6":"Pfizer–BioNTech","7":"44434","8":"NA","9":"2.2","10":"Economics","11":"Economics 101","12":"Policy 101","13":"Calculus 101","14":"Spanish 101"},{"1":"Alex","2":"Chapman","3":"19","4":"2024","5":"No","6":"NA","7":"NA","8":"NA","9":"2.3","10":"Government","11":"Economics 101","12":"Policy 101","13":"Calculus 201","14":"French 101"},{"1":"Tim","2":"Ronan","3":"18","4":"2025","5":"Yes","6":"Pfizer–BioNTech","7":"44473","8":"NA","9":"3.9","10":"Economics","11":"Economics 101","12":"Calculus 101","13":"Policy 101","14":"French 101"},{"1":"Jennifer","2":"Perry","3":"19","4":"2025","5":"Yes","6":"Pfizer–BioNTech","7":"44464","8":"NA","9":"3.2","10":"Government","11":"Economics 101","12":"Sociology 101","13":"Policy 101","14":"NA"},{"1":"Rachel","2":"Holmes","3":"18","4":"2025","5":"No","6":"NA","7":"NA","8":"NA","9":"3.5","10":"NA","11":"Economics 101","12":"Calculus 101","13":"Art history 101","14":"NA"},{"1":"Omar","2":"Richards","3":"20","4":"2025","5":"Yes","6":"Pfizer–BioNTech","7":"44477","8":"NA","9":"2.8","10":"Sociology","11":"Economics 101","12":"Sociology 101","13":"Policy 101","14":"Calculus 101"},{"1":"Leila","2":"Holt","3":"18","4":"2025","5":"Yes","6":"Johnson & Johnson","7":"44484","8":"NA","9":"2.6","10":"Sociology","11":"Economics 101","12":"Sociology 101","13":"NA","14":"NA"},{"1":"NA","2":"NA","3":"NA","4":"NA","5":"NA","6":"NA","7":"NA","8":"NA","9":"NA","10":"NA","11":"NA","12":"NA","13":"NA","14":"NA"},{"1":"Otis","2":"Price","3":"18","4":"2025","5":"Yes","6":"Johnson & Johnson","7":"44464","8":"NA","9":"3.4","10":"Government","11":"Economics 101","12":"Calculus 201","13":"Policy 101","14":"Spanish 101"},{"1":"Alex","2":"Jacobs","3":"19","4":"2025","5":"Yes","6":"Pfizer–BioNTech","7":"44434","8":"NA","9":"3.8","10":"Economics","11":"Economics 101","12":"Sociology 101","13":"NA","14":"Calculus 101"},{"1":"Mary","2":"Morris","3":"20","4":"2025","5":"Yes","6":"Moderna","7":"44425","8":"NA","9":"2.1","10":"Economics","11":"Economics 101","12":"Calculus 201","13":"Spanish 101","14":"Anthropology 101"},{"1":"Annie","2":"Fox","3":"18","4":"2025","5":"Yes","6":"Moderna","7":"44427","8":"NA","9":"2.2","10":"French","11":"Economics 101","12":"French 101","13":"NA","14":"Calculus 201"},{"1":"Rick","2":"Webster","3":"19","4":"2025","5":"No","6":"NA","7":"NA","8":"NA","9":"3.5","10":"NA","11":"Economics 101","12":"Calculus 101","13":"NA","14":"NA"},{"1":"Thomas","2":"Flynn","3":"22","4":"2022","5":"NA","6":"NA","7":"NA","8":"NA","9":"3.6","10":"Spanish","11":"Economics 101","12":"Spanish 308","13":"Calculus 302","14":"Sociology 201"},{"1":"Alfred","2":"Marshall","3":"20","4":"2025","5":"NA","6":"NA","7":"NA","8":"NA","9":"3.0","10":"Economics","11":"Economics 101","12":"Sociology 101","13":"Policy 101","14":"NA"},{"1":"Nadia","2":"Youssef","3":"18","4":"2025","5":"Yes","6":"NA","7":"44415","8":"NA","9":"3.0","10":"Government","11":"Economics 101","12":"Policy 101","13":"Calculus 201","14":"Spanish 101"},{"1":"Joseph","2":"Wilson","3":"19","4":"2025","5":"No","6":"NA","7":"NA","8":"NA","9":"2.8","10":"Economics","11":"Economics 101","12":"Calculus 201","13":"NA","14":"NA"},{"1":"Jane","2":"Owens","3":"20","4":"2025","5":"Yes","6":"Pfizer–BioNTech","7":"44456","8":"NA","9":"3.7","10":"Anthropology","11":"Economics 101","12":"Calculus 201","13":"Policy 101","14":"Anthropology 101"},{"1":"Ali","2":"Abbas","3":"21","4":"2023","5":"Yes","6":"Pfizer–BioNTech","7":"44485","8":"NA","9":"2.5","10":"Economics","11":"Economics 101","12":"Policy 101","13":"NA","14":"NA"},{"1":"Rayan","2":"Abdi","3":"19","4":"2025","5":"Yes","6":"Pfizer–BioNTech","7":"44471","8":"NA","9":"3.1","10":"Sociology","11":"Economics 101","12":"Sociology 101","13":"Calculus 201","14":"NA"},{"1":"Molly","2":"Kane","3":"19","4":"2025","5":"Yes","6":"Pfizer–BioNTech","7":"44421","8":"NA","9":"2.8","10":"Government","11":"Economics 101","12":"Policy 101","13":"Calculus 201","14":"French 101"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(<span class="at">dirty_data =</span> <span class="fu">colnames</span>(dirty_data), <span class="at">student_data =</span> <span class="fu">colnames</span>(student_data))</span></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["dirty_data"],"name":[1],"type":["chr"],"align":["left"]},{"label":["student_data"],"name":[2],"type":["chr"],"align":["left"]}],"data":[{"1":"First name","2":"first_name"},{"1":"last name","2":"last_name"},{"1":"Age ---","2":"age"},{"1":"Class of??","2":"class_of"},{"1":"Vac status","2":"vac_status"},{"1":"Vaccine","2":"vaccine"},{"1":"Latest vaccination","2":"latest_vaccination"},{"1":"Grade %","2":"grade_percent"},{"1":"GPA","2":"gpa"},{"1":"Declared--major","2":"declared_major"},{"1":"Course 1","2":"course_1"},{"1":"course.  2","2":"course_2"},{"1":"course 3+","2":"course_3"},{"1":"Course 4","2":"course_4"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>Note that the <code>echo = FALSE</code> parameter was added to the code chunk to prevent printing of the R code that generated the plot.</p>
+</div>
+<div id="removing-redundant-rowscolumns" class="section level2">
+<h2>Removing redundant rows/columns</h2>
+<p>We use <code>remove_empty()</code> to <strong>get rid of empty rows and columns</strong>, and use <code>remove_constant()</code> to <strong>get rid of columns with constant values</strong>.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>student_data</span></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["first_name"],"name":[1],"type":["chr"],"align":["left"]},{"label":["last_name"],"name":[2],"type":["chr"],"align":["left"]},{"label":["age"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["class_of"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["vac_status"],"name":[5],"type":["chr"],"align":["left"]},{"label":["vaccine"],"name":[6],"type":["chr"],"align":["left"]},{"label":["latest_vaccination"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["grade_percent"],"name":[8],"type":["lgl"],"align":["right"]},{"label":["gpa"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["declared_major"],"name":[10],"type":["chr"],"align":["left"]},{"label":["course_1"],"name":[11],"type":["chr"],"align":["left"]},{"label":["course_2"],"name":[12],"type":["chr"],"align":["left"]},{"label":["course_3"],"name":[13],"type":["chr"],"align":["left"]},{"label":["course_4"],"name":[14],"type":["chr"],"align":["left"]}],"data":[{"1":"Sadie","2":"Miles","3":"19","4":"2025","5":"Yes","6":"Pfizer–BioNTech","7":"44434","8":"NA","9":"2.2","10":"Economics","11":"Economics 101","12":"Policy 101","13":"Calculus 101","14":"Spanish 101"},{"1":"Alex","2":"Chapman","3":"19","4":"2024","5":"No","6":"NA","7":"NA","8":"NA","9":"2.3","10":"Government","11":"Economics 101","12":"Policy 101","13":"Calculus 201","14":"French 101"},{"1":"Tim","2":"Ronan","3":"18","4":"2025","5":"Yes","6":"Pfizer–BioNTech","7":"44473","8":"NA","9":"3.9","10":"Economics","11":"Economics 101","12":"Calculus 101","13":"Policy 101","14":"French 101"},{"1":"Jennifer","2":"Perry","3":"19","4":"2025","5":"Yes","6":"Pfizer–BioNTech","7":"44464","8":"NA","9":"3.2","10":"Government","11":"Economics 101","12":"Sociology 101","13":"Policy 101","14":"NA"},{"1":"Rachel","2":"Holmes","3":"18","4":"2025","5":"No","6":"NA","7":"NA","8":"NA","9":"3.5","10":"NA","11":"Economics 101","12":"Calculus 101","13":"Art history 101","14":"NA"},{"1":"Omar","2":"Richards","3":"20","4":"2025","5":"Yes","6":"Pfizer–BioNTech","7":"44477","8":"NA","9":"2.8","10":"Sociology","11":"Economics 101","12":"Sociology 101","13":"Policy 101","14":"Calculus 101"},{"1":"Leila","2":"Holt","3":"18","4":"2025","5":"Yes","6":"Johnson & Johnson","7":"44484","8":"NA","9":"2.6","10":"Sociology","11":"Economics 101","12":"Sociology 101","13":"NA","14":"NA"},{"1":"NA","2":"NA","3":"NA","4":"NA","5":"NA","6":"NA","7":"NA","8":"NA","9":"NA","10":"NA","11":"NA","12":"NA","13":"NA","14":"NA"},{"1":"Otis","2":"Price","3":"18","4":"2025","5":"Yes","6":"Johnson & Johnson","7":"44464","8":"NA","9":"3.4","10":"Government","11":"Economics 101","12":"Calculus 201","13":"Policy 101","14":"Spanish 101"},{"1":"Alex","2":"Jacobs","3":"19","4":"2025","5":"Yes","6":"Pfizer–BioNTech","7":"44434","8":"NA","9":"3.8","10":"Economics","11":"Economics 101","12":"Sociology 101","13":"NA","14":"Calculus 101"},{"1":"Mary","2":"Morris","3":"20","4":"2025","5":"Yes","6":"Moderna","7":"44425","8":"NA","9":"2.1","10":"Economics","11":"Economics 101","12":"Calculus 201","13":"Spanish 101","14":"Anthropology 101"},{"1":"Annie","2":"Fox","3":"18","4":"2025","5":"Yes","6":"Moderna","7":"44427","8":"NA","9":"2.2","10":"French","11":"Economics 101","12":"French 101","13":"NA","14":"Calculus 201"},{"1":"Rick","2":"Webster","3":"19","4":"2025","5":"No","6":"NA","7":"NA","8":"NA","9":"3.5","10":"NA","11":"Economics 101","12":"Calculus 101","13":"NA","14":"NA"},{"1":"Thomas","2":"Flynn","3":"22","4":"2022","5":"NA","6":"NA","7":"NA","8":"NA","9":"3.6","10":"Spanish","11":"Economics 101","12":"Spanish 308","13":"Calculus 302","14":"Sociology 201"},{"1":"Alfred","2":"Marshall","3":"20","4":"2025","5":"NA","6":"NA","7":"NA","8":"NA","9":"3.0","10":"Economics","11":"Economics 101","12":"Sociology 101","13":"Policy 101","14":"NA"},{"1":"Nadia","2":"Youssef","3":"18","4":"2025","5":"Yes","6":"NA","7":"44415","8":"NA","9":"3.0","10":"Government","11":"Economics 101","12":"Policy 101","13":"Calculus 201","14":"Spanish 101"},{"1":"Joseph","2":"Wilson","3":"19","4":"2025","5":"No","6":"NA","7":"NA","8":"NA","9":"2.8","10":"Economics","11":"Economics 101","12":"Calculus 201","13":"NA","14":"NA"},{"1":"Jane","2":"Owens","3":"20","4":"2025","5":"Yes","6":"Pfizer–BioNTech","7":"44456","8":"NA","9":"3.7","10":"Anthropology","11":"Economics 101","12":"Calculus 201","13":"Policy 101","14":"Anthropology 101"},{"1":"Ali","2":"Abbas","3":"21","4":"2023","5":"Yes","6":"Pfizer–BioNTech","7":"44485","8":"NA","9":"2.5","10":"Economics","11":"Economics 101","12":"Policy 101","13":"NA","14":"NA"},{"1":"Rayan","2":"Abdi","3":"19","4":"2025","5":"Yes","6":"Pfizer–BioNTech","7":"44471","8":"NA","9":"3.1","10":"Sociology","11":"Economics 101","12":"Sociology 101","13":"Calculus 201","14":"NA"},{"1":"Molly","2":"Kane","3":"19","4":"2025","5":"Yes","6":"Pfizer–BioNTech","7":"44421","8":"NA","9":"2.8","10":"Government","11":"Economics 101","12":"Policy 101","13":"Calculus 201","14":"French 101"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>student_data <span class="ot">&lt;-</span> student_data <span class="sc">%&gt;%</span> <span class="fu">remove_empty</span>(<span class="fu">c</span>(<span class="st">&quot;rows&quot;</span>, <span class="st">&quot;cols&quot;</span>))</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>student_data</span></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["first_name"],"name":[1],"type":["chr"],"align":["left"]},{"label":["last_name"],"name":[2],"type":["chr"],"align":["left"]},{"label":["age"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["class_of"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["vac_status"],"name":[5],"type":["chr"],"align":["left"]},{"label":["vaccine"],"name":[6],"type":["chr"],"align":["left"]},{"label":["latest_vaccination"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["gpa"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["declared_major"],"name":[9],"type":["chr"],"align":["left"]},{"label":["course_1"],"name":[10],"type":["chr"],"align":["left"]},{"label":["course_2"],"name":[11],"type":["chr"],"align":["left"]},{"label":["course_3"],"name":[12],"type":["chr"],"align":["left"]},{"label":["course_4"],"name":[13],"type":["chr"],"align":["left"]}],"data":[{"1":"Sadie","2":"Miles","3":"19","4":"2025","5":"Yes","6":"Pfizer–BioNTech","7":"44434","8":"2.2","9":"Economics","10":"Economics 101","11":"Policy 101","12":"Calculus 101","13":"Spanish 101"},{"1":"Alex","2":"Chapman","3":"19","4":"2024","5":"No","6":"NA","7":"NA","8":"2.3","9":"Government","10":"Economics 101","11":"Policy 101","12":"Calculus 201","13":"French 101"},{"1":"Tim","2":"Ronan","3":"18","4":"2025","5":"Yes","6":"Pfizer–BioNTech","7":"44473","8":"3.9","9":"Economics","10":"Economics 101","11":"Calculus 101","12":"Policy 101","13":"French 101"},{"1":"Jennifer","2":"Perry","3":"19","4":"2025","5":"Yes","6":"Pfizer–BioNTech","7":"44464","8":"3.2","9":"Government","10":"Economics 101","11":"Sociology 101","12":"Policy 101","13":"NA"},{"1":"Rachel","2":"Holmes","3":"18","4":"2025","5":"No","6":"NA","7":"NA","8":"3.5","9":"NA","10":"Economics 101","11":"Calculus 101","12":"Art history 101","13":"NA"},{"1":"Omar","2":"Richards","3":"20","4":"2025","5":"Yes","6":"Pfizer–BioNTech","7":"44477","8":"2.8","9":"Sociology","10":"Economics 101","11":"Sociology 101","12":"Policy 101","13":"Calculus 101"},{"1":"Leila","2":"Holt","3":"18","4":"2025","5":"Yes","6":"Johnson & Johnson","7":"44484","8":"2.6","9":"Sociology","10":"Economics 101","11":"Sociology 101","12":"NA","13":"NA"},{"1":"Otis","2":"Price","3":"18","4":"2025","5":"Yes","6":"Johnson & Johnson","7":"44464","8":"3.4","9":"Government","10":"Economics 101","11":"Calculus 201","12":"Policy 101","13":"Spanish 101"},{"1":"Alex","2":"Jacobs","3":"19","4":"2025","5":"Yes","6":"Pfizer–BioNTech","7":"44434","8":"3.8","9":"Economics","10":"Economics 101","11":"Sociology 101","12":"NA","13":"Calculus 101"},{"1":"Mary","2":"Morris","3":"20","4":"2025","5":"Yes","6":"Moderna","7":"44425","8":"2.1","9":"Economics","10":"Economics 101","11":"Calculus 201","12":"Spanish 101","13":"Anthropology 101"},{"1":"Annie","2":"Fox","3":"18","4":"2025","5":"Yes","6":"Moderna","7":"44427","8":"2.2","9":"French","10":"Economics 101","11":"French 101","12":"NA","13":"Calculus 201"},{"1":"Rick","2":"Webster","3":"19","4":"2025","5":"No","6":"NA","7":"NA","8":"3.5","9":"NA","10":"Economics 101","11":"Calculus 101","12":"NA","13":"NA"},{"1":"Thomas","2":"Flynn","3":"22","4":"2022","5":"NA","6":"NA","7":"NA","8":"3.6","9":"Spanish","10":"Economics 101","11":"Spanish 308","12":"Calculus 302","13":"Sociology 201"},{"1":"Alfred","2":"Marshall","3":"20","4":"2025","5":"NA","6":"NA","7":"NA","8":"3.0","9":"Economics","10":"Economics 101","11":"Sociology 101","12":"Policy 101","13":"NA"},{"1":"Nadia","2":"Youssef","3":"18","4":"2025","5":"Yes","6":"NA","7":"44415","8":"3.0","9":"Government","10":"Economics 101","11":"Policy 101","12":"Calculus 201","13":"Spanish 101"},{"1":"Joseph","2":"Wilson","3":"19","4":"2025","5":"No","6":"NA","7":"NA","8":"2.8","9":"Economics","10":"Economics 101","11":"Calculus 201","12":"NA","13":"NA"},{"1":"Jane","2":"Owens","3":"20","4":"2025","5":"Yes","6":"Pfizer–BioNTech","7":"44456","8":"3.7","9":"Anthropology","10":"Economics 101","11":"Calculus 201","12":"Policy 101","13":"Anthropology 101"},{"1":"Ali","2":"Abbas","3":"21","4":"2023","5":"Yes","6":"Pfizer–BioNTech","7":"44485","8":"2.5","9":"Economics","10":"Economics 101","11":"Policy 101","12":"NA","13":"NA"},{"1":"Rayan","2":"Abdi","3":"19","4":"2025","5":"Yes","6":"Pfizer–BioNTech","7":"44471","8":"3.1","9":"Sociology","10":"Economics 101","11":"Sociology 101","12":"Calculus 201","13":"NA"},{"1":"Molly","2":"Kane","3":"19","4":"2025","5":"Yes","6":"Pfizer–BioNTech","7":"44421","8":"2.8","9":"Government","10":"Economics 101","11":"Policy 101","12":"Calculus 201","13":"French 101"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>student_data <span class="ot">&lt;-</span> student_data <span class="sc">%&gt;%</span> <span class="fu">remove_constant</span>(<span class="at">quiet=</span> <span class="cn">FALSE</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>student_data</span></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["first_name"],"name":[1],"type":["chr"],"align":["left"]},{"label":["last_name"],"name":[2],"type":["chr"],"align":["left"]},{"label":["age"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["class_of"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["vac_status"],"name":[5],"type":["chr"],"align":["left"]},{"label":["vaccine"],"name":[6],"type":["chr"],"align":["left"]},{"label":["latest_vaccination"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["gpa"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["declared_major"],"name":[9],"type":["chr"],"align":["left"]},{"label":["course_2"],"name":[10],"type":["chr"],"align":["left"]},{"label":["course_3"],"name":[11],"type":["chr"],"align":["left"]},{"label":["course_4"],"name":[12],"type":["chr"],"align":["left"]}],"data":[{"1":"Sadie","2":"Miles","3":"19","4":"2025","5":"Yes","6":"Pfizer–BioNTech","7":"44434","8":"2.2","9":"Economics","10":"Policy 101","11":"Calculus 101","12":"Spanish 101"},{"1":"Alex","2":"Chapman","3":"19","4":"2024","5":"No","6":"NA","7":"NA","8":"2.3","9":"Government","10":"Policy 101","11":"Calculus 201","12":"French 101"},{"1":"Tim","2":"Ronan","3":"18","4":"2025","5":"Yes","6":"Pfizer–BioNTech","7":"44473","8":"3.9","9":"Economics","10":"Calculus 101","11":"Policy 101","12":"French 101"},{"1":"Jennifer","2":"Perry","3":"19","4":"2025","5":"Yes","6":"Pfizer–BioNTech","7":"44464","8":"3.2","9":"Government","10":"Sociology 101","11":"Policy 101","12":"NA"},{"1":"Rachel","2":"Holmes","3":"18","4":"2025","5":"No","6":"NA","7":"NA","8":"3.5","9":"NA","10":"Calculus 101","11":"Art history 101","12":"NA"},{"1":"Omar","2":"Richards","3":"20","4":"2025","5":"Yes","6":"Pfizer–BioNTech","7":"44477","8":"2.8","9":"Sociology","10":"Sociology 101","11":"Policy 101","12":"Calculus 101"},{"1":"Leila","2":"Holt","3":"18","4":"2025","5":"Yes","6":"Johnson & Johnson","7":"44484","8":"2.6","9":"Sociology","10":"Sociology 101","11":"NA","12":"NA"},{"1":"Otis","2":"Price","3":"18","4":"2025","5":"Yes","6":"Johnson & Johnson","7":"44464","8":"3.4","9":"Government","10":"Calculus 201","11":"Policy 101","12":"Spanish 101"},{"1":"Alex","2":"Jacobs","3":"19","4":"2025","5":"Yes","6":"Pfizer–BioNTech","7":"44434","8":"3.8","9":"Economics","10":"Sociology 101","11":"NA","12":"Calculus 101"},{"1":"Mary","2":"Morris","3":"20","4":"2025","5":"Yes","6":"Moderna","7":"44425","8":"2.1","9":"Economics","10":"Calculus 201","11":"Spanish 101","12":"Anthropology 101"},{"1":"Annie","2":"Fox","3":"18","4":"2025","5":"Yes","6":"Moderna","7":"44427","8":"2.2","9":"French","10":"French 101","11":"NA","12":"Calculus 201"},{"1":"Rick","2":"Webster","3":"19","4":"2025","5":"No","6":"NA","7":"NA","8":"3.5","9":"NA","10":"Calculus 101","11":"NA","12":"NA"},{"1":"Thomas","2":"Flynn","3":"22","4":"2022","5":"NA","6":"NA","7":"NA","8":"3.6","9":"Spanish","10":"Spanish 308","11":"Calculus 302","12":"Sociology 201"},{"1":"Alfred","2":"Marshall","3":"20","4":"2025","5":"NA","6":"NA","7":"NA","8":"3.0","9":"Economics","10":"Sociology 101","11":"Policy 101","12":"NA"},{"1":"Nadia","2":"Youssef","3":"18","4":"2025","5":"Yes","6":"NA","7":"44415","8":"3.0","9":"Government","10":"Policy 101","11":"Calculus 201","12":"Spanish 101"},{"1":"Joseph","2":"Wilson","3":"19","4":"2025","5":"No","6":"NA","7":"NA","8":"2.8","9":"Economics","10":"Calculus 201","11":"NA","12":"NA"},{"1":"Jane","2":"Owens","3":"20","4":"2025","5":"Yes","6":"Pfizer–BioNTech","7":"44456","8":"3.7","9":"Anthropology","10":"Calculus 201","11":"Policy 101","12":"Anthropology 101"},{"1":"Ali","2":"Abbas","3":"21","4":"2023","5":"Yes","6":"Pfizer–BioNTech","7":"44485","8":"2.5","9":"Economics","10":"Policy 101","11":"NA","12":"NA"},{"1":"Rayan","2":"Abdi","3":"19","4":"2025","5":"Yes","6":"Pfizer–BioNTech","7":"44471","8":"3.1","9":"Sociology","10":"Sociology 101","11":"Calculus 201","12":"NA"},{"1":"Molly","2":"Kane","3":"19","4":"2025","5":"Yes","6":"Pfizer–BioNTech","7":"44421","8":"2.8","9":"Government","10":"Policy 101","11":"Calculus 201","12":"French 101"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+<div id="rounding" class="section level2">
+<h2>Rounding</h2>
+<p>This packages offer <strong>multiple rounding functions</strong> which we can utilize for our specific needs. We can use <code>round_half_up()</code> for rounding up or <code>round_to_fraction()</code> to enforce the desired fractional distribution by rounding the values to the nearest value by specifying a denominator.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round_half_up</span>(student_data<span class="sc">$</span>gpa)</span></code></pre></div>
+<pre><code>FALSE  [1] 2 2 4 3 3 3 3 3 4 2 2 3 4 3 3 3 4 3 3 3</code></pre>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round_half_up</span>(student_data<span class="sc">$</span>gpa, <span class="at">digits =</span> <span class="dv">2</span>)</span></code></pre></div>
+<pre><code>FALSE  [1] 2.2 2.3 3.9 3.2 3.5 2.8 2.6 3.4 3.8 2.1 2.2 3.5 3.6 3.0 3.0 2.8 3.7 2.5 3.1
+FALSE [20] 2.8</code></pre>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round_to_fraction</span>(student_data<span class="sc">$</span>gpa, <span class="at">denominator =</span> <span class="dv">2</span>)</span></code></pre></div>
+<pre><code>FALSE  [1] 2.0 2.5 4.0 3.0 3.5 3.0 2.5 3.5 4.0 2.0 2.0 3.5 3.5 3.0 3.0 3.0 3.5 2.5 3.0
+FALSE [20] 3.0</code></pre>
+</div>
+<div id="fixing-date-formats" class="section level2">
+<h2>Fixing date formats</h2>
+<p>We can also easily <strong>fix dates</strong> that do not appear in proper form when imported from external files using <code>convert_to_date()</code>.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>student_data</span></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["first_name"],"name":[1],"type":["chr"],"align":["left"]},{"label":["last_name"],"name":[2],"type":["chr"],"align":["left"]},{"label":["age"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["class_of"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["vac_status"],"name":[5],"type":["chr"],"align":["left"]},{"label":["vaccine"],"name":[6],"type":["chr"],"align":["left"]},{"label":["latest_vaccination"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["gpa"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["declared_major"],"name":[9],"type":["chr"],"align":["left"]},{"label":["course_2"],"name":[10],"type":["chr"],"align":["left"]},{"label":["course_3"],"name":[11],"type":["chr"],"align":["left"]},{"label":["course_4"],"name":[12],"type":["chr"],"align":["left"]}],"data":[{"1":"Sadie","2":"Miles","3":"19","4":"2025","5":"Yes","6":"Pfizer–BioNTech","7":"44434","8":"2.2","9":"Economics","10":"Policy 101","11":"Calculus 101","12":"Spanish 101"},{"1":"Alex","2":"Chapman","3":"19","4":"2024","5":"No","6":"NA","7":"NA","8":"2.3","9":"Government","10":"Policy 101","11":"Calculus 201","12":"French 101"},{"1":"Tim","2":"Ronan","3":"18","4":"2025","5":"Yes","6":"Pfizer–BioNTech","7":"44473","8":"3.9","9":"Economics","10":"Calculus 101","11":"Policy 101","12":"French 101"},{"1":"Jennifer","2":"Perry","3":"19","4":"2025","5":"Yes","6":"Pfizer–BioNTech","7":"44464","8":"3.2","9":"Government","10":"Sociology 101","11":"Policy 101","12":"NA"},{"1":"Rachel","2":"Holmes","3":"18","4":"2025","5":"No","6":"NA","7":"NA","8":"3.5","9":"NA","10":"Calculus 101","11":"Art history 101","12":"NA"},{"1":"Omar","2":"Richards","3":"20","4":"2025","5":"Yes","6":"Pfizer–BioNTech","7":"44477","8":"2.8","9":"Sociology","10":"Sociology 101","11":"Policy 101","12":"Calculus 101"},{"1":"Leila","2":"Holt","3":"18","4":"2025","5":"Yes","6":"Johnson & Johnson","7":"44484","8":"2.6","9":"Sociology","10":"Sociology 101","11":"NA","12":"NA"},{"1":"Otis","2":"Price","3":"18","4":"2025","5":"Yes","6":"Johnson & Johnson","7":"44464","8":"3.4","9":"Government","10":"Calculus 201","11":"Policy 101","12":"Spanish 101"},{"1":"Alex","2":"Jacobs","3":"19","4":"2025","5":"Yes","6":"Pfizer–BioNTech","7":"44434","8":"3.8","9":"Economics","10":"Sociology 101","11":"NA","12":"Calculus 101"},{"1":"Mary","2":"Morris","3":"20","4":"2025","5":"Yes","6":"Moderna","7":"44425","8":"2.1","9":"Economics","10":"Calculus 201","11":"Spanish 101","12":"Anthropology 101"},{"1":"Annie","2":"Fox","3":"18","4":"2025","5":"Yes","6":"Moderna","7":"44427","8":"2.2","9":"French","10":"French 101","11":"NA","12":"Calculus 201"},{"1":"Rick","2":"Webster","3":"19","4":"2025","5":"No","6":"NA","7":"NA","8":"3.5","9":"NA","10":"Calculus 101","11":"NA","12":"NA"},{"1":"Thomas","2":"Flynn","3":"22","4":"2022","5":"NA","6":"NA","7":"NA","8":"3.6","9":"Spanish","10":"Spanish 308","11":"Calculus 302","12":"Sociology 201"},{"1":"Alfred","2":"Marshall","3":"20","4":"2025","5":"NA","6":"NA","7":"NA","8":"3.0","9":"Economics","10":"Sociology 101","11":"Policy 101","12":"NA"},{"1":"Nadia","2":"Youssef","3":"18","4":"2025","5":"Yes","6":"NA","7":"44415","8":"3.0","9":"Government","10":"Policy 101","11":"Calculus 201","12":"Spanish 101"},{"1":"Joseph","2":"Wilson","3":"19","4":"2025","5":"No","6":"NA","7":"NA","8":"2.8","9":"Economics","10":"Calculus 201","11":"NA","12":"NA"},{"1":"Jane","2":"Owens","3":"20","4":"2025","5":"Yes","6":"Pfizer–BioNTech","7":"44456","8":"3.7","9":"Anthropology","10":"Calculus 201","11":"Policy 101","12":"Anthropology 101"},{"1":"Ali","2":"Abbas","3":"21","4":"2023","5":"Yes","6":"Pfizer–BioNTech","7":"44485","8":"2.5","9":"Economics","10":"Policy 101","11":"NA","12":"NA"},{"1":"Rayan","2":"Abdi","3":"19","4":"2025","5":"Yes","6":"Pfizer–BioNTech","7":"44471","8":"3.1","9":"Sociology","10":"Sociology 101","11":"Calculus 201","12":"NA"},{"1":"Molly","2":"Kane","3":"19","4":"2025","5":"Yes","6":"Pfizer–BioNTech","7":"44421","8":"2.8","9":"Government","10":"Policy 101","11":"Calculus 201","12":"French 101"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>student_data<span class="sc">$</span>latest_vaccination <span class="ot">&lt;-</span> <span class="fu">convert_to_date</span>(student_data<span class="sc">$</span>latest_vaccination)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>student_data</span></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["first_name"],"name":[1],"type":["chr"],"align":["left"]},{"label":["last_name"],"name":[2],"type":["chr"],"align":["left"]},{"label":["age"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["class_of"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["vac_status"],"name":[5],"type":["chr"],"align":["left"]},{"label":["vaccine"],"name":[6],"type":["chr"],"align":["left"]},{"label":["latest_vaccination"],"name":[7],"type":["date"],"align":["right"]},{"label":["gpa"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["declared_major"],"name":[9],"type":["chr"],"align":["left"]},{"label":["course_2"],"name":[10],"type":["chr"],"align":["left"]},{"label":["course_3"],"name":[11],"type":["chr"],"align":["left"]},{"label":["course_4"],"name":[12],"type":["chr"],"align":["left"]}],"data":[{"1":"Sadie","2":"Miles","3":"19","4":"2025","5":"Yes","6":"Pfizer–BioNTech","7":"2021-08-26","8":"2.2","9":"Economics","10":"Policy 101","11":"Calculus 101","12":"Spanish 101"},{"1":"Alex","2":"Chapman","3":"19","4":"2024","5":"No","6":"NA","7":"<NA>","8":"2.3","9":"Government","10":"Policy 101","11":"Calculus 201","12":"French 101"},{"1":"Tim","2":"Ronan","3":"18","4":"2025","5":"Yes","6":"Pfizer–BioNTech","7":"2021-10-04","8":"3.9","9":"Economics","10":"Calculus 101","11":"Policy 101","12":"French 101"},{"1":"Jennifer","2":"Perry","3":"19","4":"2025","5":"Yes","6":"Pfizer–BioNTech","7":"2021-09-25","8":"3.2","9":"Government","10":"Sociology 101","11":"Policy 101","12":"NA"},{"1":"Rachel","2":"Holmes","3":"18","4":"2025","5":"No","6":"NA","7":"<NA>","8":"3.5","9":"NA","10":"Calculus 101","11":"Art history 101","12":"NA"},{"1":"Omar","2":"Richards","3":"20","4":"2025","5":"Yes","6":"Pfizer–BioNTech","7":"2021-10-08","8":"2.8","9":"Sociology","10":"Sociology 101","11":"Policy 101","12":"Calculus 101"},{"1":"Leila","2":"Holt","3":"18","4":"2025","5":"Yes","6":"Johnson & Johnson","7":"2021-10-15","8":"2.6","9":"Sociology","10":"Sociology 101","11":"NA","12":"NA"},{"1":"Otis","2":"Price","3":"18","4":"2025","5":"Yes","6":"Johnson & Johnson","7":"2021-09-25","8":"3.4","9":"Government","10":"Calculus 201","11":"Policy 101","12":"Spanish 101"},{"1":"Alex","2":"Jacobs","3":"19","4":"2025","5":"Yes","6":"Pfizer–BioNTech","7":"2021-08-26","8":"3.8","9":"Economics","10":"Sociology 101","11":"NA","12":"Calculus 101"},{"1":"Mary","2":"Morris","3":"20","4":"2025","5":"Yes","6":"Moderna","7":"2021-08-17","8":"2.1","9":"Economics","10":"Calculus 201","11":"Spanish 101","12":"Anthropology 101"},{"1":"Annie","2":"Fox","3":"18","4":"2025","5":"Yes","6":"Moderna","7":"2021-08-19","8":"2.2","9":"French","10":"French 101","11":"NA","12":"Calculus 201"},{"1":"Rick","2":"Webster","3":"19","4":"2025","5":"No","6":"NA","7":"<NA>","8":"3.5","9":"NA","10":"Calculus 101","11":"NA","12":"NA"},{"1":"Thomas","2":"Flynn","3":"22","4":"2022","5":"NA","6":"NA","7":"<NA>","8":"3.6","9":"Spanish","10":"Spanish 308","11":"Calculus 302","12":"Sociology 201"},{"1":"Alfred","2":"Marshall","3":"20","4":"2025","5":"NA","6":"NA","7":"<NA>","8":"3.0","9":"Economics","10":"Sociology 101","11":"Policy 101","12":"NA"},{"1":"Nadia","2":"Youssef","3":"18","4":"2025","5":"Yes","6":"NA","7":"2021-08-07","8":"3.0","9":"Government","10":"Policy 101","11":"Calculus 201","12":"Spanish 101"},{"1":"Joseph","2":"Wilson","3":"19","4":"2025","5":"No","6":"NA","7":"<NA>","8":"2.8","9":"Economics","10":"Calculus 201","11":"NA","12":"NA"},{"1":"Jane","2":"Owens","3":"20","4":"2025","5":"Yes","6":"Pfizer–BioNTech","7":"2021-09-17","8":"3.7","9":"Anthropology","10":"Calculus 201","11":"Policy 101","12":"Anthropology 101"},{"1":"Ali","2":"Abbas","3":"21","4":"2023","5":"Yes","6":"Pfizer–BioNTech","7":"2021-10-16","8":"2.5","9":"Economics","10":"Policy 101","11":"NA","12":"NA"},{"1":"Rayan","2":"Abdi","3":"19","4":"2025","5":"Yes","6":"Pfizer–BioNTech","7":"2021-10-02","8":"3.1","9":"Sociology","10":"Sociology 101","11":"Calculus 201","12":"NA"},{"1":"Molly","2":"Kane","3":"19","4":"2025","5":"Yes","6":"Pfizer–BioNTech","7":"2021-08-13","8":"2.8","9":"Government","10":"Policy 101","11":"Calculus 201","12":"French 101"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+<div id="getting-dupes" class="section level2">
+<h2>Getting dupes</h2>
+<p>We can use the <code>get_dupes()</code>function to <strong>detect any duplicates</strong>, have our data frame listed on the specified column, and get dupe counts.</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>student_data <span class="sc">%&gt;%</span> <span class="fu">get_dupes</span>()</span></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["first_name"],"name":[1],"type":["chr"],"align":["left"]},{"label":["last_name"],"name":[2],"type":["chr"],"align":["left"]},{"label":["age"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["class_of"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["vac_status"],"name":[5],"type":["chr"],"align":["left"]},{"label":["vaccine"],"name":[6],"type":["chr"],"align":["left"]},{"label":["latest_vaccination"],"name":[7],"type":["date"],"align":["right"]},{"label":["gpa"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["declared_major"],"name":[9],"type":["chr"],"align":["left"]},{"label":["course_2"],"name":[10],"type":["chr"],"align":["left"]},{"label":["course_3"],"name":[11],"type":["chr"],"align":["left"]},{"label":["course_4"],"name":[12],"type":["chr"],"align":["left"]},{"label":["dupe_count"],"name":[13],"type":["int"],"align":["right"]}],"data":[],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>student_data <span class="sc">%&gt;%</span> <span class="fu">get_dupes</span>(first_name)</span></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["first_name"],"name":[1],"type":["chr"],"align":["left"]},{"label":["dupe_count"],"name":[2],"type":["int"],"align":["right"]},{"label":["last_name"],"name":[3],"type":["chr"],"align":["left"]},{"label":["age"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["class_of"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["vac_status"],"name":[6],"type":["chr"],"align":["left"]},{"label":["vaccine"],"name":[7],"type":["chr"],"align":["left"]},{"label":["latest_vaccination"],"name":[8],"type":["date"],"align":["right"]},{"label":["gpa"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["declared_major"],"name":[10],"type":["chr"],"align":["left"]},{"label":["course_2"],"name":[11],"type":["chr"],"align":["left"]},{"label":["course_3"],"name":[12],"type":["chr"],"align":["left"]},{"label":["course_4"],"name":[13],"type":["chr"],"align":["left"]}],"data":[{"1":"Alex","2":"2","3":"Chapman","4":"19","5":"2024","6":"No","7":"NA","8":"<NA>","9":"2.3","10":"Government","11":"Policy 101","12":"Calculus 201","13":"French 101"},{"1":"Alex","2":"2","3":"Jacobs","4":"19","5":"2025","6":"Yes","7":"Pfizer–BioNTech","8":"2021-08-26","9":"3.8","10":"Economics","11":"Sociology 101","12":"NA","13":"Calculus 101"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>student_data <span class="sc">%&gt;%</span> <span class="fu">get_dupes</span>(vaccine)</span></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["vaccine"],"name":[1],"type":["chr"],"align":["left"]},{"label":["dupe_count"],"name":[2],"type":["int"],"align":["right"]},{"label":["first_name"],"name":[3],"type":["chr"],"align":["left"]},{"label":["last_name"],"name":[4],"type":["chr"],"align":["left"]},{"label":["age"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["class_of"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["vac_status"],"name":[7],"type":["chr"],"align":["left"]},{"label":["latest_vaccination"],"name":[8],"type":["date"],"align":["right"]},{"label":["gpa"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["declared_major"],"name":[10],"type":["chr"],"align":["left"]},{"label":["course_2"],"name":[11],"type":["chr"],"align":["left"]},{"label":["course_3"],"name":[12],"type":["chr"],"align":["left"]},{"label":["course_4"],"name":[13],"type":["chr"],"align":["left"]}],"data":[{"1":"Johnson & Johnson","2":"2","3":"Leila","4":"Holt","5":"18","6":"2025","7":"Yes","8":"2021-10-15","9":"2.6","10":"Sociology","11":"Sociology 101","12":"NA","13":"NA"},{"1":"Johnson & Johnson","2":"2","3":"Otis","4":"Price","5":"18","6":"2025","7":"Yes","8":"2021-09-25","9":"3.4","10":"Government","11":"Calculus 201","12":"Policy 101","13":"Spanish 101"},{"1":"Moderna","2":"2","3":"Mary","4":"Morris","5":"20","6":"2025","7":"Yes","8":"2021-08-17","9":"2.1","10":"Economics","11":"Calculus 201","12":"Spanish 101","13":"Anthropology 101"},{"1":"Moderna","2":"2","3":"Annie","4":"Fox","5":"18","6":"2025","7":"Yes","8":"2021-08-19","9":"2.2","10":"French","11":"French 101","12":"NA","13":"Calculus 201"},{"1":"Pfizer–BioNTech","2":"9","3":"Sadie","4":"Miles","5":"19","6":"2025","7":"Yes","8":"2021-08-26","9":"2.2","10":"Economics","11":"Policy 101","12":"Calculus 101","13":"Spanish 101"},{"1":"Pfizer–BioNTech","2":"9","3":"Tim","4":"Ronan","5":"18","6":"2025","7":"Yes","8":"2021-10-04","9":"3.9","10":"Economics","11":"Calculus 101","12":"Policy 101","13":"French 101"},{"1":"Pfizer–BioNTech","2":"9","3":"Jennifer","4":"Perry","5":"19","6":"2025","7":"Yes","8":"2021-09-25","9":"3.2","10":"Government","11":"Sociology 101","12":"Policy 101","13":"NA"},{"1":"Pfizer–BioNTech","2":"9","3":"Omar","4":"Richards","5":"20","6":"2025","7":"Yes","8":"2021-10-08","9":"2.8","10":"Sociology","11":"Sociology 101","12":"Policy 101","13":"Calculus 101"},{"1":"Pfizer–BioNTech","2":"9","3":"Alex","4":"Jacobs","5":"19","6":"2025","7":"Yes","8":"2021-08-26","9":"3.8","10":"Economics","11":"Sociology 101","12":"NA","13":"Calculus 101"},{"1":"Pfizer–BioNTech","2":"9","3":"Jane","4":"Owens","5":"20","6":"2025","7":"Yes","8":"2021-09-17","9":"3.7","10":"Anthropology","11":"Calculus 201","12":"Policy 101","13":"Anthropology 101"},{"1":"Pfizer–BioNTech","2":"9","3":"Ali","4":"Abbas","5":"21","6":"2023","7":"Yes","8":"2021-10-16","9":"2.5","10":"Economics","11":"Policy 101","12":"NA","13":"NA"},{"1":"Pfizer–BioNTech","2":"9","3":"Rayan","4":"Abdi","5":"19","6":"2025","7":"Yes","8":"2021-10-02","9":"3.1","10":"Sociology","11":"Sociology 101","12":"Calculus 201","13":"NA"},{"1":"Pfizer–BioNTech","2":"9","3":"Molly","4":"Kane","5":"19","6":"2025","7":"Yes","8":"2021-08-13","9":"2.8","10":"Government","11":"Policy 101","12":"Calculus 201","13":"French 101"},{"1":"NA","2":"7","3":"Alex","4":"Chapman","5":"19","6":"2024","7":"No","8":"<NA>","9":"2.3","10":"Government","11":"Policy 101","12":"Calculus 201","13":"French 101"},{"1":"NA","2":"7","3":"Rachel","4":"Holmes","5":"18","6":"2025","7":"No","8":"<NA>","9":"3.5","10":"NA","11":"Calculus 101","12":"Art history 101","13":"NA"},{"1":"NA","2":"7","3":"Rick","4":"Webster","5":"19","6":"2025","7":"No","8":"<NA>","9":"3.5","10":"NA","11":"Calculus 101","12":"NA","13":"NA"},{"1":"NA","2":"7","3":"Thomas","4":"Flynn","5":"22","6":"2022","7":"NA","8":"<NA>","9":"3.6","10":"Spanish","11":"Spanish 308","12":"Calculus 302","13":"Sociology 201"},{"1":"NA","2":"7","3":"Alfred","4":"Marshall","5":"20","6":"2025","7":"NA","8":"<NA>","9":"3.0","10":"Economics","11":"Sociology 101","12":"Policy 101","13":"NA"},{"1":"NA","2":"7","3":"Nadia","4":"Youssef","5":"18","6":"2025","7":"Yes","8":"2021-08-07","9":"3.0","10":"Government","11":"Policy 101","12":"Calculus 201","13":"Spanish 101"},{"1":"NA","2":"7","3":"Joseph","4":"Wilson","5":"19","6":"2025","7":"No","8":"<NA>","9":"2.8","10":"Economics","11":"Calculus 201","12":"NA","13":"NA"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+<div id="exploring-data-through-frequency" class="section level2">
+<h2>Exploring data through frequency</h2>
+<p>The function <code>tabyl()</code> <strong>returns neat and quick frequency tables</strong>. Later, we can utilize a list of <code>adorn_xxx()</code> functions to format displayed results.</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>student_data <span class="sc">%&gt;%</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tabyl</span>(declared_major) <span class="sc">%&gt;%</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">adorn_totals</span>(<span class="st">&quot;row&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">adorn_pct_formatting</span>()</span></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["declared_major"],"name":[1],"type":["chr"],"align":["left"]},{"label":["n"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["percent"],"name":[3],"type":["chr"],"align":["left"]},{"label":["valid_percent"],"name":[4],"type":["chr"],"align":["left"]}],"data":[{"1":"Anthropology","2":"1","3":"5.0%","4":"5.6%","_rn_":"1"},{"1":"Economics","2":"7","3":"35.0%","4":"38.9%","_rn_":"2"},{"1":"French","2":"1","3":"5.0%","4":"5.6%","_rn_":"3"},{"1":"Government","2":"5","3":"25.0%","4":"27.8%","_rn_":"4"},{"1":"Sociology","2":"3","3":"15.0%","4":"16.7%","_rn_":"5"},{"1":"Spanish","2":"1","3":"5.0%","4":"5.6%","_rn_":"6"},{"1":"NA","2":"2","3":"10.0%","4":"-","_rn_":"7"},{"1":"Total","2":"20","3":"100.0%","4":"100.0%","_rn_":"8"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>student_data <span class="sc">%&gt;%</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tabyl</span>(age, class_of) <span class="sc">%&gt;%</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">adorn_totals</span>(<span class="st">&quot;row&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">adorn_percentages</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">adorn_pct_formatting</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">adorn_ns</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">adorn_title</span>()</span></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":[1],"type":["chr"],"align":["left"]},{"label":["class_of"],"name":[2],"type":["chr"],"align":["left"]},{"label":[""],"name":[3],"type":["chr"],"align":["left"]},{"label":[""],"name":[4],"type":["chr"],"align":["left"]},{"label":[""],"name":[5],"type":["chr"],"align":["left"]}],"data":[{"1":"age","2":"2022","3":"2023","4":"2024","5":"2025"},{"1":"18","2":"0.0% (0)","3":"0.0% (0)","4":"0.0% (0)","5":"100.0%  (6)"},{"1":"19","2":"0.0% (0)","3":"0.0% (0)","4":"12.5% (1)","5":"87.5%  (7)"},{"1":"20","2":"0.0% (0)","3":"0.0% (0)","4":"0.0% (0)","5":"100.0%  (4)"},{"1":"21","2":"0.0% (0)","3":"100.0% (1)","4":"0.0% (0)","5":"0.0%  (0)"},{"1":"22","2":"100.0% (1)","3":"0.0% (0)","4":"0.0% (0)","5":"0.0%  (0)"},{"1":"Total","2":"5.0% (1)","3":"5.0% (1)","4":"5.0% (1)","5":"85.0% (17)"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+<div id="a-few-more-useful-tricks" class="section level2">
+<h2>A few more useful tricks</h2>
+<p>What if we have couple of rows we want to discard? We can use <code>row_to_names()</code> function to <strong>pick any row as our column names</strong>.</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>library_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">Library_Stats_1 =</span> <span class="fu">c</span>(<span class="st">&quot;Check outs from the library&quot;</span>, <span class="st">&quot;Number of books&quot;</span>, <span class="st">&quot;8&quot;</span>, <span class="st">&quot;12&quot;</span>, <span class="st">&quot;4&quot;</span>),</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">Library_Stats_2 =</span> <span class="fu">c</span>(<span class="st">&quot;Number of completed books&quot;</span>, <span class="st">&quot;Read&quot;</span>, <span class="st">&quot;5&quot;</span>, <span class="st">&quot;9&quot;</span>, <span class="st">&quot;2&quot;</span>))</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>library_data</span></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["Library_Stats_1"],"name":[1],"type":["chr"],"align":["left"]},{"label":["Library_Stats_2"],"name":[2],"type":["chr"],"align":["left"]}],"data":[{"1":"Check outs from the library","2":"Number of completed books"},{"1":"Number of books","2":"Read"},{"1":"8","2":"5"},{"1":"12","2":"9"},{"1":"4","2":"2"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>row_trick <span class="ot">&lt;-</span> library_data <span class="sc">%&gt;%</span> <span class="fu">row_to_names</span>(<span class="at">row_number =</span> <span class="dv">2</span>)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>row_trick</span></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["Number of books"],"name":[1],"type":["chr"],"align":["left"]},{"label":["Read"],"name":[2],"type":["chr"],"align":["left"]}],"data":[{"1":"8","2":"5","_rn_":"3"},{"1":"12","2":"9","_rn_":"4"},{"1":"4","2":"2","_rn_":"5"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>We can also <strong>observe the changes we have made</strong> to the columns by using the <code>compare_df_cols()</code> function.</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">compare_df_cols</span>(library_data, row_trick)</span></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["column_name"],"name":[1],"type":["chr"],"align":["left"]},{"label":["library_data"],"name":[2],"type":["chr"],"align":["left"]},{"label":["row_trick"],"name":[3],"type":["chr"],"align":["left"]}],"data":[{"1":"Library_Stats_1","2":"character","3":"NA"},{"1":"Library_Stats_2","2":"character","3":"NA"},{"1":"Number of books","2":"NA","3":"character"},{"1":"Read","2":"NA","3":"character"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+<div id="sources" class="section level2">
+<h2>Sources</h2>
+<p>This tutorial draws from the following materials: <a href="https://cran.r-project.org/web/packages/janitor/janitor.pdf"><em>janitor package</em></a>, <a href="https://cran.r-project.org/web/packages/janitor/vignettes/janitor.html#tabyl---a-better-version-of-table"><em>overview of janitor functions</em></a>, <a href="https://garthtarr.github.io/meatR/janitor.html#catalog_of_janitor_functions"><em>catalog of janitor functions</em></a>, <a href="https://www.youtube.com/watch?v=poUveR6aDS8"><em>R package reviews | janitor | clean your data!</em></a></p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

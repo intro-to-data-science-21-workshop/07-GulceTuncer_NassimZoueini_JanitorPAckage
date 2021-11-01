@@ -1,0 +1,35 @@
+---
+title: "reallife_application"
+author: "nassimzoueini"
+date: "1 11 2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+#Step 1 - libraries
+
+
+```
+
+
+```{r}
+#Step 2 - Importing the data and examining it
+```
+
+
+
+```{r}
+#Step 3 - Roll your sleeves! We're Cleaning!
+
+```
+
+
+```{r}
+#Step 4 - Manipulation :D 
+
+```
+
