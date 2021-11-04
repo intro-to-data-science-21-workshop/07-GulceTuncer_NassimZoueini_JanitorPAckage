@@ -9,6 +9,8 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+This real-life example uses a chunk of raw data selected from a survey conducted by RPS-MENA about the economic value of a public beach in Lebanon. The survey is done for NAHNOO a Lebanese NGO that fights for preserving public spaces and promotes sustainable urban design. The study is intended to serve as a tool to create strong arguments to mobilize, campaign, advocate and lobby decision makers to create the needed policies that would protect public beaches from privatization by showing their economic value.
+
 ```{r}
 #Step 1 - libraries
 
